@@ -16,7 +16,7 @@ _start:
 
     // We ignore initializing general purpose registers
     // Initialize the SP_EL1
-    LDR X1, =_stack_top
+    LDR X1, =el1_stack_top
     MOV SP, X1
 
     // Initialize system control registers

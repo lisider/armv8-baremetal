@@ -3,7 +3,7 @@
 .global _el0_entry
 _el0_entry:
 
-    ldr x30, =stack_top	// setup stack
+    ldr x30, =el0_stack_top	// setup stack for SP_EL0
     mov sp, x30
     bl main
 
