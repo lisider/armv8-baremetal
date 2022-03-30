@@ -7,6 +7,7 @@ It supports:
 
 - [x] FIQ/IRQ handling
 - [x] Exception handling
+- [x] uart
 - [ ] Page table
 - [ ] SMP
 
@@ -14,8 +15,7 @@ It requires `qemu-system-aarch64` installed to run this project.
 
 ```bash
 make
-qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 2 \
-        -kernel krenel.elf
+qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 2 -kernel kernel.elf
 ```
 
 # References
