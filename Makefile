@@ -9,7 +9,7 @@ export E Q
 
 CROSS_COMPILE ?= aarch64-linux-gnu-
 
-asm-objs = boot.o el0_entry.o
+asm-objs = boot.o el0_entry.o el1_vector.o
 c-objs = main.o  pl011.o
 
 kernel.bin: kernel.elf

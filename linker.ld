@@ -1,7 +1,7 @@
 SECTIONS
 {
     . = 0x40080000;
-    .text : { *(.text.boot) }
+    .text : { *(.text.boot)  *(.text.vector_el1) }
     .data : { *(.data) }
     .bss : { *(.bss COMMON) }
     . = 0x40880000;

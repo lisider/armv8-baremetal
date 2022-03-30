@@ -2,6 +2,7 @@
 .balign 4
 .global _start
 _start:
+    // without virtualization=on && secure=on
     // We will default reset to EL1, because Qemu default not support EL2/3
     // Initialize VBAR_EL1
     LDR X1, =vec_tbl_el1
@@ -16,6 +17,8 @@ _start:
 
     // We ignore initializing general purpose registers
     // Initialize the SP_EL1
+    // 在不同的特权级下，通用寄存器 sp(即栈寄存器) 会引用 sp_el0 或 sp_el1
+    // （即 sp 相当于 sp_el0 或 sp_el1 的别名
     LDR X1, =el1_stack_top
     MOV SP, X1
 
@@ -27,77 +30,11 @@ _start:
     // Enable FP registers accessing from EL1 and EL0
     MOV X1, #(0x3 << 20)
     MSR CPACR_EL1, X1
-    
+
     // Prepare entring EL0
     MOV X0, #0b00000
     MSR SPSR_EL1, X0
+
     LDR X0, =_el0_entry
     MSR ELR_EL1, X0
     ERET
-
-.balign 0x800
-// vector table for EL1
-vec_tbl_el1:
-curr_el_sp0_sync:
-    WFI
-
-.balign 0x80
-curr_el_sp0_irq:
-    WFI
-
-.balign 0x80
-curr_el_sp0_fiq:
-    WFI
-
-.balign 0x80
-curr_el_sp0_serr:
-    WFI
-
-.balign 0x80
-curr_el_spx_sync:
-    MRS X1, ESR_EL1
-    WFI
-
-.balign 0x80
-curr_el_spx_irq:
-    WFI
-
-.balign 0x80
-curr_el_spx_fiq:
-    WFI
-
-.balign 0x80
-curr_el_spx_serr:
-    WFI
-
-.balign 0x80
-lower_el_64b_sync:
-    WFI
-
-.balign 0x80
-lower_el_64b_irq:
-    WFI
-
-.balign 0x80
-lower_el_64b_fiq:
-    WFI
-
-.balign 0x80
-lower_el_64b_serr:
-    WFI
-
-.balign 0x80
-lower_el_32b_sync:
-    WFI
-
-.balign 0x80
-lower_el_32b_irq:
-    WFI
-
-.balign 0x80
-lower_el_32b_fiq:
-    WFI
-
-.balign 0x80
-lower_el_32b_serr:
-    WFI
