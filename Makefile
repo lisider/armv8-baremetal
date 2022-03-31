@@ -11,7 +11,7 @@ CROSS_COMPILE ?= aarch64-linux-gnu-
 export LOG_DIR=$(shell  echo output/`date +"%Y_%m_%d_%H_%M_%S"`)
 
 asm-objs = el1_boot.o el0_entry.o el1_vector.o
-c-objs = main.o  pl011.o
+c-objs = main.o  pl011.o el1_handler.o
 
 help:
 	@echo target list:
