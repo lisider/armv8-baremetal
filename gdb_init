@@ -1,0 +1,8 @@
+set logging file log_gdb.txt
+set logging on
+file kernel.elf
+set architecture aarch64
+target remote localhost:1234
+b el1_boot.S:8
+b _el0_entry
+b main

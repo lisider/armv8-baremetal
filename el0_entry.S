@@ -9,6 +9,9 @@ _el0_entry:
     bl main
 
 loop:
+    mov x0,x0
+    mov x1,x1
+    mov x2,x2
     b loop
 
     ADR X1, _el0_entry
