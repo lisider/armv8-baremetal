@@ -1,0 +1,46 @@
+register
+    info all-registers
+    info registers
+    p $sp
+    p $pc
+    p/x $SCTLR
+
+file
+    file
+    load
+
+program flow
+    run
+    c
+    n
+    s
+    monitor halt
+    ctrl-c
+
+address
+    x/nfu <addr>
+
+    x/1xw 0x40080000
+
+    x/8xw $pc
+
+    x $sp
+    x/1 $sp
+    x/2 $sp
+    x/10 $sp
+
+    print *(char*)0xbff444f1=5
+    print *(int*)0xbff444f1=0x55555555
+
+    load
+
+breakpoint
+    break
+    info break
+
+variable
+    p *tmp_p
+    p/x array
+
+    set x = 12
+    set array 1 2 3 4
