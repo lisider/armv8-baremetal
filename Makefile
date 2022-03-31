@@ -13,7 +13,9 @@ export LOG_DIR=$(shell  echo output/`date +"%Y_%m_%d_%H_%M_%S"`)
 asm-objs = el1_boot.o el0_entry.o el1_vector.o
 c-objs = main.o  pl011.o
 
-
+help:
+	@echo target list:
+	@cat Makefile   |grep ":" |egrep -v "asm-objs|c-objs|PHONY|target" | cut -d ":" -f1 | sed s/^/'\t'/g
 
 kernel.elf.asm: kernel.elf
 	$(E) "  OBJDUMP " $@
@@ -47,9 +49,6 @@ debug_gdb:
 kill:
 	killall qemu-system-aarch64
 
-help:
-	@echo target list:
-	@cat Makefile   |grep ":" |egrep -v "asm-objs|c-objs|PHONY|target" | cut -d ":" -f1 | sed s/^/'\t'/g
 
 .PHONY: clean
 clean:
