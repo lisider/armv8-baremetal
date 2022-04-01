@@ -1,7 +1,11 @@
 #include "uart.h"
+#include "stdio.h"
 
 void main(void) 
 {
+    printf("hello\n");
+    printf("%s\n","hello");
+    printf("%08X\n",0x01);
     print_uart0("Hello World\n");
 
     asm("LDR X8,=0x1");

@@ -9,3 +9,10 @@ void print_uart0(const char *s)
           s++;			                /* Next char */
     }
 }
+
+void uart_write(const void *buf, size_t count){
+    size_t i = 0;
+    for (;i<count;i++){
+         *UART0DR = (unsigned int)*((unsigned char*)buf+i); /* Transmit char */
+    }
+}

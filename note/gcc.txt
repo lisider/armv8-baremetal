@@ -1,0 +1,41 @@
+nostdlib
+    不连接系统标准启动文件和标准库文件，只把指定的文件传递给连接器。
+    这个选项常用于编译内核、bootloader等程序，它们不需要启动文件、标准库文件。
+
+    C语言程序执行的第一条指令。并不是main函数。
+    生成一个C程序的可执行文件时编译器通常会在我们的代码上
+    加上几个被称为启动文件的crt1.o,crti.o,crtend.o,crtn.o等，他们是
+    标准库(stdlib)文件。
+    这些代码设置C程序的堆栈等，然后调用main函数。
+    他们依赖于操作系统(在不同的操作系统上,不同的架构上有不同的实现)
+    在裸板上无法执行，所以我们自己写一个。
+    所以，我们自己写的*.S汇编文件就是一个启动文件，它设置好堆栈后调用main函数。
+    因此，我们不需要系统自带的启动文件。
+
+    即 stdlib 完成了 main 的加载 和 一些常用函数(printf)
+        printf 也是系统相关的
+    如果我们不用 stdlib , 那么必须自己写代码 完成 main 的加载 和 自己实现 printf
+
+
+    如果我们用了 stdlib , 则 .c 编译 .o 的过程中,可能会夹杂对stdlib的引用,例如
+    __stack_chk_guard
+
+    -nostdlib -nostartfiles 等价于 -nostdlib
+    必须要有 -nostdlib , 才可以不引用 stdlib
+    只有 -nostartfiles , 还是会引用 stdlib
+
+stdio.h
+    可以去man printf 去看 stdio.h 有很多函数的声明
+
+       #include <stdio.h>
+
+       int printf(const char *format, ...);
+       int fprintf(FILE *stream, const char *format, ...);
+       int dprintf(int fd, const char *format, ...);
+       int sprintf(char *str, const char *format, ...);
+       int snprintf(char *str, size_t size, const char *format, ...);
+
+
+    函数声明在 stdio.h 中,但是不一定定义在 stdio.c 中
+    printf 在 glibc 中被定义
+
