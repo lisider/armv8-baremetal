@@ -11,7 +11,8 @@ CROSS_COMPILE ?= aarch64-linux-gnu-
 export LOG_DIR=$(shell  echo output/`date +"%Y_%m_%d_%H_%M_%S"`)
 
 asm-objs = el1_boot.o el0_entry.o el1_vector.o
-c-objs = main.o  pl011.o el1_handler.o stdio.o vsprintf.o shell.o
+c-objs = main.o  pl011.o el1_handler.o stdio.o \
+	vsprintf.o shell.o cmds.o parse.o string.o
 
 help:
 	@echo target list:
@@ -27,7 +28,8 @@ kernel.bin: kernel.elf
 
 kernel.elf: $(asm-objs) $(c-objs)
 	$(E) "  LINK    " $@
-	$(Q) $(CROSS_COMPILE)ld -T linker.ld -static $(asm-objs)  $(c-objs) -o kernel.elf
+	$(Q) $(CROSS_COMPILE)ld -T linker.ld -static $(asm-objs)  $(c-objs) -o kernel.elf -Map=kernel.map
+	$(Q) $(CROSS_COMPILE)nm kernel.elf | sort >> kernel.map
 
 $(asm-objs): %.o: %.S
 	$(E) "  CC      " $@
@@ -53,6 +55,6 @@ kill:
 .PHONY: clean
 clean:
 	$(E) "  CLEAN   "
-	$(Q) rm -f *.o kernel.elf kernel.bin kernel.elf.asm
+	$(Q) rm -f *.o kernel*
 	$(Q)$(shell [ ! -e output  ] && mkdir output)
 	$(Q)$(shell [ -e log_run.txt ] && mkdir ${LOG_DIR} && mv log* ${LOG_DIR})

@@ -1,6 +1,7 @@
 #include "shell.h"
 #include "stdio.h"
 #include "uart.h"
+#include "parse.h"
 
 char *PROMPT ="suws@baremetel:~$ ";
 char *intro=
@@ -167,7 +168,7 @@ void shell(void)
             continue;
         }
 
-        printf("ack:%s\n",sp);
+        parse(sp)();
 
     }
     return ;

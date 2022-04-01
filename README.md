@@ -8,6 +8,7 @@ It supports:
 - [x] FIQ/IRQ handling
 - [x] Exception handling
 - [x] uart
+- [x] shell
 - [ ] Page table
 - [ ] SMP
 
