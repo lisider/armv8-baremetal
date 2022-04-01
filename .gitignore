@@ -1,5 +1,7 @@
 *.swp
 *.o
-kernel.elf
-kernel.bin
+kernel.*
 output
+cscope*
+tags
+log*.txt
