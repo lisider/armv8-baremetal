@@ -5,19 +5,19 @@ This is a demo project for learning ARMv8 Aarch64 ISA and ARMv8 assembly.
 
 It supports:
 
-- [x] FIQ/IRQ handling
-- [x] Exception handling
+- [x] boot from EL1 & return to EL0
+- [x] el1 vector table
 - [x] stdio on uart
 - [x] shell
 - [x] svc demo
-- [ ] Page table
+- [x] brk instructions & debug monitor software
+- [x] external debug (likely cpu<->jtag2usb<->usb_drvier<->gdbserver<->gdb)
 - [ ] SMP
 
 It requires `qemu-system-aarch64` installed to run this project.
 
 ```bash
-make
-qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 2 -kernel kernel.elf
+make run
 ```
 
 # References
