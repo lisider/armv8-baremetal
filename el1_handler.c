@@ -6,7 +6,38 @@
  ************************************************************************/
 #include "stdio.h"
 
-void svc_handler(int num){
-    printf("svc handler\n");
+
+void brk_handler(){
+    printf("%s\n",__func__);
+}
+
+void svc_handler(){
+    printf("%s\n",__func__);
+}
+
+void el021_sync_handler(int num){
+    printf("%s\n",__func__);
+    int EC = (num&0xfc000000)>>26;
+    int IL = (num&0x02000000)>>25;
+    int ISS= (num&0x01ffffff);
+
+    printf("EC :%08X,IL :%08X,ISS :%08X\n",EC,IL,ISS);
+
+    switch(EC){
+        case 0X15:{
+                      svc_handler();
+                      break;
+                  }
+        case 0x3C:{
+                      brk_handler();
+                      asm("stp x0,x1,[sp , #-16]!");
+                      asm("MRS X0,ELR_EL1");
+                      asm("ADD X0,X0,4");
+                      asm("MSR ELR_EL1,X0");
+                      asm("ldp x0,x1,[sp], #16");
+                      break;
+                  }
+    }
+
     return ;
 }

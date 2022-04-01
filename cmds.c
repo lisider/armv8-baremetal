@@ -54,6 +54,20 @@ CMD(quit){
 }
 
 
+CMD(brk){
+    printf("%s enter\n",__func__);
+    asm("BRK #0X0");
+    printf("%s exit\n",__func__);
+}
+
+CMD(svc){
+    printf("%s enter\n",__func__);
+    asm("LDR X8,=0x1");
+    asm("SVC #0x0");
+    printf("%s exit\n",__func__);
+}
+
+
 
 //-------------------------------------------------------------
 

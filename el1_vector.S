@@ -46,8 +46,9 @@ lower_el_64b_sync: // svc from el0 & el1 is 64bit
     stp x2,x3,[sp , #-16]!
     stp x4,x5,[sp , #-16]!
     stp x6,x7,[sp , #-16]!
-    mov x0,x8
-    bl svc_handler
+    MRS x0,ESR_EL1
+    mov x1,x8
+    bl el021_sync_handler
     ldp x6,x7,[sp], #16
     ldp x4,x5,[sp], #16
     ldp x2,x3,[sp], #16
