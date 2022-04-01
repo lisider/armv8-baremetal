@@ -7,8 +7,9 @@ It supports:
 
 - [x] FIQ/IRQ handling
 - [x] Exception handling
-- [x] uart
+- [x] stdio on uart
 - [x] shell
+- [x] svc demo
 - [ ] Page table
 - [ ] SMP
 
