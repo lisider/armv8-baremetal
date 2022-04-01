@@ -6,6 +6,7 @@
  ************************************************************************/
 #include "stdio.h"
 #include "shell.h"
+#include "dlib.h"
 
 
 void brk_handler(){
@@ -16,8 +17,9 @@ void svc_handler(){
     printf("%s\n",__func__);
 }
 
-void el021_sync_handler(int num){
+void el021_sync_handler(int num,struct pt_regs * p){
     printf("%s\n",__func__);
+    pt_regs = p;
     int EC = (num&0xfc000000)>>26;
     int IL = (num&0x02000000)>>25;
     int ISS= (num&0x01ffffff);

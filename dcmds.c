@@ -6,6 +6,7 @@
  ************************************************************************/
 #include "stdio.h"
 #include "cmd.h"
+#include "dlib.h"
 
 DCMD(help){
 
@@ -50,9 +51,12 @@ DCMD(quit){
 }
 
 
+DCMD(regs){
+    printf("EL0 regs before \"BRK\" instruction :\n");
+    show_regs(pt_regs);
+}
 
 //-------------------------------------------------------------
-
 
 DCMD(new){
     printf("%s\n",__func__);
