@@ -26,6 +26,7 @@ extern int getline (char *lp, uint32_t n, uint8_t dsp);
 extern long int mystrtoul(char *s);
 extern char * utoa(char *s, unsigned int u);
 extern char * get_entry (char *cp, char **pNext);
-extern void shell(void);
+extern void shell_user(void);
+extern void shell_debug(void);
 
 #endif // __SHELL_H__

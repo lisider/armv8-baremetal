@@ -2,11 +2,19 @@
 #include "stdio.h"
 #include "uart.h"
 #include "parse.h"
+#include "string.h"
 
 char *PROMPT ="suws@baremetel:~$ ";
+char *PROMPT_DEBUG ="suws@debug:~$ ";
 char *intro=
 "********************\n"
 "****LITTLE SHELL****\n"
+"********************\n"
+;
+
+char *intro_debug=
+"********************\n"
+"*MONITOR DEBUG SHELL\n"
 "********************\n"
 ;
 
@@ -153,7 +161,7 @@ char *get_entry (char *cp, char **pNext) {
 }
 
 
-void shell(void)
+void shell_user(void)
 {
     char *sp,*next;
     int i;
@@ -169,6 +177,30 @@ void shell(void)
         }
 
         parse(sp)();
+
+    }
+    return ;
+}
+
+void shell_debug(void)
+{
+    char *sp,*next;
+    int i;
+    printf (intro_debug);
+    while (TRUE) {
+        printf (PROMPT_DEBUG);
+        if (getline(in_line, sizeof (in_line), 1) == FALSE) {
+            continue;
+        }
+        sp = get_entry (&in_line[0], &next);
+        if (*sp == 0) {
+            continue;
+        }
+
+        if (strcmp(sp,"quit") == 0)
+            break;
+
+        parse_debug(sp)();
 
     }
     return ;

@@ -6,6 +6,6 @@
 void main(void) 
 {
     printf("Hello World\n");
-    shell();
+    shell_user();
     return;
 }

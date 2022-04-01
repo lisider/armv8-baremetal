@@ -20,4 +20,10 @@ SECTIONS
     data_ptrs   : { *(data_ptrs)  }
     __initcall_end = .;
     /*上述3行代码代表function_ptrs节位于__initcall_start和__initcall_end之间*/
+
+    . = . + 0x1000; /* 4kB of hole */
+    . = ALIGN(32);
+    __initcall_debug_start = .;
+    debug_ptrs   : { *(debug_ptrs)  }
+    __initcall_debug_end = .;
 }

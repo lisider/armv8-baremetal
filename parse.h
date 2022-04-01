@@ -10,5 +10,6 @@
 #include "cmd.h"
 
 extern fun_t parse(const char * name);
+extern fun_t parse_debug(const char * name);
 
 #endif

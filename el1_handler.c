@@ -5,10 +5,11 @@
   > Created Time: Thu 31 Mar 2022 10:36:11 PM CST
  ************************************************************************/
 #include "stdio.h"
+#include "shell.h"
 
 
 void brk_handler(){
-    printf("%s\n",__func__);
+    shell_debug();
 }
 
 void svc_handler(){

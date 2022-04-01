@@ -35,4 +35,24 @@ fun_t parse(const char * name){
 
 }
 
+fun_t parse_debug(const char * name){
+
+    struct cmd *p = NULL;
+    char * tmp = NULL;
+
+    p = &__initcall_debug_start;
+    do {
+        if(strcmp(p->name,name) == 0){
+            return p->fun;
+        }else{
+            tmp = (char *)p;
+            tmp +=32;
+            p= (struct cmd *)tmp;
+        }
+    } while (p < &__initcall_debug_end);
+
+    if(p >= &__initcall_debug_end)
+        return not_find;
+
+}
 
