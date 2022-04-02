@@ -80,8 +80,25 @@ void el021_sync_handler(struct pt_regs * p){
 
     printf("EC :%08X,IL :%08X,ISS :%08X\n",EC,IL,ISS);
     printf("Previous Exception Level: %s\n",m_table[mrs(SPSR_EL1)&0xF]);
+    printf("Previous Execution State: %s\n",(mrs(SPSR_EL1)&0x10) == 1 ?"aarch32":"aarch64");
     printf("Current  Exception class: %s\n",ec_table[EC]);
     printf("Current  Exception Level: EL%d\n", ( mrs(CurrentEL) >> 2) & 0x3);
+    //printf("Current  Execution State: %s\n",(mrs(PSTATE)&0x10) == 1 ?"aarch32":"aarch64");
+    // it seems that there's no way to read PSTATE
+    // please goto DDI0487E_armv8_A_architecture_reference_manual.pdf P366 for
+    // "Instructions for accessing the PSTATE fields"
+    //
+    // HCR_EL2[31] Execution state control
+    //      : 0b0 Lower levels are all AArch32
+    //      : 0b1 The Execution state for EL1 is AArch64,The Execution state
+    //      for EL0 is determined by the current value of PSTATE.nRW when
+    //      executing at EL0
+    // From DEN0024A_v8_architecture_PG.pdf P35,we We see a sentence that
+    // "However, a 32-bit operating system cannot host a 64-bit application and
+    // a 32-bit hypervisor cannot host a 64-bit guest operating system."
+    //
+    // now EL0 PSTATE[4] is 0 , EL0 AArch64
+    // EL1 must be AArch64
 
     switch(EC){
         case 0X15:{
