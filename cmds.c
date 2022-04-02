@@ -76,6 +76,6 @@ CMD(new){
     printf("%s\n",__func__);
     int i = 0;
     for(; i<argc; i++){
-        printf("Argument %d is %s\n", i, argv + i*4);
+        printf("Argument %d is %s\n", i, (char *)argv + i*32);
     }
 }

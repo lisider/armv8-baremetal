@@ -7,6 +7,8 @@
 #include "stdio.h"
 #include "cmd.h"
 #include "dlib.h"
+#include "string.h"
+#include "sreg_ops.h"
 
 DCMD(help){
 
@@ -56,12 +58,29 @@ DCMD(regs){
     show_regs(pt_regs);
 }
 
+DCMD(reg){
+
+    if (argc == 1){
+        printf("Usage : new MPIDR_EL1 CurrentEL\n");
+        return ;
+    }
+    int i = 1;
+    for(; i<argc; i++){
+        if (strcmp((char *)argv + i*32,"MPIDR_EL1") == 0){
+            printf("MPIDR_EL1: 0x%lx\n", mrs(MPIDR_EL1));
+        }else if (strcmp((char *)argv + i*32,"CurrentEL") == 0){
+            u64 lvl = mrs(CurrentEL);
+            printf("CurrentEL: 0x%lx | EL%d\n", lvl,(lvl >> 2) & 0x3);
+        }
+    }
+}
+
 //-------------------------------------------------------------
 
 DCMD(new){
     printf("%s\n",__func__);
     int i = 0;
     for(; i<argc; i++){
-        printf("Argument %d is %s\n", i, argv + i*4);
+        printf("Argument %d is %s\n", i, (char *)argv + i*32);
     }
 }
