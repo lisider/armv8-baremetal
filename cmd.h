@@ -10,7 +10,7 @@
 extern struct cmd __initcall_start, __initcall_end;
 extern struct cmd __initcall_debug_start, __initcall_debug_end;
 
-typedef void(*fun_t)(void);
+typedef void(*fun_t)(int argc, char** argv);
 
 struct cmd{
     char name[16];
@@ -22,20 +22,20 @@ struct cmd{
 #define DEBUG_FUN_NAME(name) name##_debug_fun
 
 #define CMD(name) \
-    static void FUN_NAME(name)(void);\
+    static void FUN_NAME(name)(int argc, char** argv);\
     static struct cmd name __attribute__((section("data_ptrs"))) __attribute__((aligned(32))) = {\
         TO_STRING(name),\
         FUN_NAME(name),\
     };\
-   static void FUN_NAME(name)(void)
+   static void FUN_NAME(name)(int argc, char** argv)
 
 #define DCMD(name) \
-    static void DEBUG_FUN_NAME(name)(void);\
+    static void DEBUG_FUN_NAME(name)(int argc, char** argv);\
     static struct cmd name __attribute__((section("debug_ptrs"))) __attribute__((aligned(32))) = {\
         TO_STRING(name),\
         DEBUG_FUN_NAME(name),\
     };\
-   static void DEBUG_FUN_NAME(name)(void)
+   static void DEBUG_FUN_NAME(name)(int argc, char** argv)
 
 
 #endif

@@ -14,3 +14,9 @@ int strcmp(const char *s1, const char *s2)
     }
     return *s1 - *s2;
 }
+
+char *strcpy(char *dest, const char *src){
+    char *ret = dest;
+    while( (*dest++ = *src++) != '\0' );
+    return ret;
+}

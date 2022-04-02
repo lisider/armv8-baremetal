@@ -9,8 +9,8 @@
 #include "cmd.h"
 
 
-void not_find(){
-    printf("command not found\n");
+void not_find(int argc, char** argv){
+    printf("%s: command not found\n",argv);
 }
 
 

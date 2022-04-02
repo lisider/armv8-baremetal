@@ -5,6 +5,7 @@
   > Created Time: Fri 01 Apr 2022 04:35:11 PM CST
  ************************************************************************/
 #include "stdio.h"
+#include "string.h"
 #include "cmd.h"
 
 CMD(help){
@@ -71,7 +72,10 @@ CMD(svc){
 
 //-------------------------------------------------------------
 
-
 CMD(new){
     printf("%s\n",__func__);
+    int i = 0;
+    for(; i<argc; i++){
+        printf("Argument %d is %s\n", i, argv + i*4);
+    }
 }

@@ -21,6 +21,7 @@
 #endif
 
 #define CMDLINE_BUF		256
+extern char oldcmd[CMDLINE_BUF];
 
 extern int getline (char *lp, uint32_t n, uint8_t dsp);
 extern long int mystrtoul(char *s);

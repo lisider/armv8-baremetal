@@ -19,8 +19,7 @@ char *intro_debug=
 ;
 
 
-static char oldcmd[CMDLINE_BUF];
-#define in_line oldcmd
+char oldcmd[CMDLINE_BUF];
 int getline(char *lp, uint32_t n, uint8_t dsp)
 {
     uint32_t cnt = 0;
@@ -163,20 +162,33 @@ char *get_entry (char *cp, char **pNext) {
 
 void shell_user(void)
 {
-    char *sp,*next;
-    int i;
+    char *sp,*next,*before;
+    int argc = 0;
+    char argv[4][32]={"0"};
     printf (intro);
     while (TRUE) {
+        argc = 0;
         printf (PROMPT);
-        if (getline(in_line, sizeof (in_line), 1) == FALSE) {
-            continue;
-        }
-        sp = get_entry (&in_line[0], &next);
-        if (*sp == 0) {
+        if (getline(oldcmd, sizeof (oldcmd), 1) == FALSE) {
             continue;
         }
 
-        parse(sp)();
+        before = &oldcmd[0];
+        sp = get_entry (before, &next);
+        if (*sp == 0) { // enter only
+            continue;
+        }
+        strcpy(argv[0],sp);
+        argc ++;
+
+        while(next){    // have parameter
+            before = next;
+            sp = get_entry (before, &next);
+            strcpy(argv[argc],sp);
+            argc ++;
+        }
+
+        parse(argv[0])(argc,(char **)argv);
 
     }
     return ;
@@ -184,23 +196,37 @@ void shell_user(void)
 
 void shell_debug(void)
 {
-    char *sp,*next;
-    int i;
+    char *sp,*next,*before;
+    int argc = 0;
+    char argv[4][32]={"0"};
     printf (intro_debug);
     while (TRUE) {
+        argc = 0;
         printf (PROMPT_DEBUG);
-        if (getline(in_line, sizeof (in_line), 1) == FALSE) {
+        if (getline(oldcmd, sizeof (oldcmd), 1) == FALSE) {
             continue;
         }
-        sp = get_entry (&in_line[0], &next);
-        if (*sp == 0) {
+
+        before = &oldcmd[0];
+        sp = get_entry (before, &next);
+        if (*sp == 0) { // enter only
             continue;
         }
 
         if (strcmp(sp,"quit") == 0)
             break;
 
-        parse_debug(sp)();
+        strcpy(argv[0],sp);
+        argc ++;
+
+        while(next){    // have parameter
+            before = next;
+            sp = get_entry (before, &next);
+            strcpy(argv[argc],sp);
+            argc ++;
+        }
+
+        parse_debug(argv[0])(argc,(char **)argv);
 
     }
     return ;
