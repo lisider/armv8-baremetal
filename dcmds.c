@@ -9,6 +9,7 @@
 #include "dlib.h"
 #include "string.h"
 #include "sreg_ops.h"
+#include "mem_ops.h"
 
 DCMD(help){
 
@@ -73,6 +74,27 @@ DCMD(reg){
             printf("CurrentEL: 0x%lx | EL%d\n", lvl,(lvl >> 2) & 0x3);
         }
     }
+}
+
+DCMD(wr){
+
+    if (argc != 3){
+        printf("Usage : wr 0x40080000 0x12345678\n");
+        return ;
+    }
+    u64 addr  = strtoul((char *)argv + 1*32);
+    u64 data  = strtoul((char *)argv + 2*32);
+    write64(addr,data);
+}
+
+DCMD(rd){
+
+    if (argc != 2){
+        printf("Usage : rd 0x40080000\n");
+        return ;
+    }
+    u64 addr  = strtoul((char *)argv + 1*32);
+    printf("0x%lx\n",read64(addr) );
 }
 
 //-------------------------------------------------------------
