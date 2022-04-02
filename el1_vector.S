@@ -68,8 +68,7 @@ lower_el_64b_sync: // svc from el0 & el1 is 64bit
     mrs	x23, spsr_el1
     stp	x22, x23, [sp, #16 * 16] // elr_el1 & spsr_el1
 
-    MRS x0,ESR_EL1
-    mov x1,sp
+    mov x0,sp
     bl el021_sync_handler
 
     ldp	x0,  x1,  [sp, #16 * 0]

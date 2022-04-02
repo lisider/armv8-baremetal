@@ -7,6 +7,59 @@
 #include "stdio.h"
 #include "shell.h"
 #include "dlib.h"
+#include "sreg_ops.h"
+
+static char *m_table[0x10] = {
+    [0x00] = "EL0t", //
+    [0x04] = "EL1t", //
+    [0x05] = "EL1h", //
+    [0x08] = "EL2t", //
+    [0x09] = "EL2h", //
+};
+
+static char *ec_table[0x40] = {
+    [0x00] = "unknown",
+    [0x01] = "wf*",
+    [0x03] = "c15 mcr/mrc",
+    [0x04] = "c15 mcrr/mrrc",
+    [0x05] = "c14 mcr/mrc",
+    [0x06] = "ldc/stc",
+    [0x07] = "FP off",
+    [0x08] = "VMRS access",
+    [0x09] = "PAC off",
+    [0x0a] = "ld/st64b",
+    [0x0c] = "c14 mrrc",
+    [0x0d] = "branch target",
+    [0x0e] = "illegal state",
+    [0x11] = "svc in a32",
+    [0x12] = "hvc in a32",
+    [0x13] = "smc in a32",
+    [0x15] = "svc in a64",
+    [0x16] = "hvc in a64",
+    [0x17] = "smc in a64",
+    [0x18] = "other mcr/mrc/sys",
+    [0x19] = "SVE off",
+    [0x1a] = "eret",
+    [0x1c] = "PAC failure",
+    [0x20] = "instruction abort (lower)",
+    [0x21] = "instruction abort (current)",
+    [0x22] = "pc misaligned",
+    [0x24] = "data abort (lower)",
+    [0x25] = "data abort (current)",
+    [0x26] = "sp misaligned",
+    [0x28] = "FP exception (a32)",
+    [0x2c] = "FP exception (a64)",
+    [0x2f] = "SError",
+    [0x30] = "BP (lower)",
+    [0x31] = "BP (current)",
+    [0x32] = "step (lower)",
+    [0x33] = "step (current)",
+    [0x34] = "watchpoint (lower)",
+    [0x35] = "watchpoint (current)",
+    [0x38] = "bkpt (a32)",
+    [0x3a] = "vector catch (a32)",
+    [0x3c] = "brk (a64)",
+};
 
 
 void brk_handler(){
@@ -17,14 +70,18 @@ void svc_handler(){
     printf("%s\n",__func__);
 }
 
-void el021_sync_handler(int num,struct pt_regs * p){
+void el021_sync_handler(struct pt_regs * p){
     printf("%s\n",__func__);
     pt_regs = p;
-    int EC = (num&0xfc000000)>>26;
-    int IL = (num&0x02000000)>>25;
-    int ISS= (num&0x01ffffff);
+    u64 esr = mrs(ESR_EL1);
+    int EC = (esr&0xfc000000)>>26;
+    int IL = (esr&0x02000000)>>25;
+    int ISS= (esr&0x01ffffff);
 
     printf("EC :%08X,IL :%08X,ISS :%08X\n",EC,IL,ISS);
+    printf("Previous Exception Level: %s\n",m_table[mrs(SPSR_EL1)&0xF]);
+    printf("Current  Exception class: %s\n",ec_table[EC]);
+    printf("Current  Exception Level: EL%d\n", ( mrs(CurrentEL) >> 2) & 0x3);
 
     switch(EC){
         case 0X15:{
