@@ -8,9 +8,9 @@ It supports:
 - [x] boot from EL1 & return to EL0
 - [x] el1 vector table
 - [x] stdio on uart
-- [x] shell
+- [x] shell for EL0
 - [x] svc demo
-- [x] brk instructions & debug monitor software
+- [x] brk instructions & debug monitor shell in EL1
 - [x] external debug (likely cpu<->jtag2usb<->usb_drvier<->gdbserver<->gdb)
 - [ ] SMP
 
