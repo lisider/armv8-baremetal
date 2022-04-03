@@ -1,0 +1,17 @@
+qemu-aarch64 with smp
+    only in EL3 boot & -bios kernel.bin , can Achieve an effect that when boot
+    we look the process form external debug,it shows that
+
+    (gdb) info threads
+      Id   Target Id                    Frame
+    * 1    Thread 1.1 (CPU#0 [running]) 0x0000000000000000 in ?? ()
+      2    Thread 1.2 (CPU#1 [running]) 0x0000000000000000 in ?? ()
+
+    All other execution methods will show that
+    (gdb) info threads
+      Id   Target Id                    Frame
+    * 1    Thread 1.1 (CPU#0 [running]) _start () at el1_boot.S:8
+      2    Thread 1.2 (CPU#1 [halted ]) _start () at el1_boot.S:8
+
+
+    CPU#1 halted , it's supposed to be done by QEMU other than loader.
