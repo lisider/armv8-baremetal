@@ -77,8 +77,20 @@ bin boot
                 a03b4c:	910003df 	mov	sp, x30
                 a03b50:	97fff12c 	bl	0xa00000
 
+boot options
+    -bios   xxx.bin
+    -kernel xxx.elf
+    不用 -bios 和 -kernel , 而是这样子:qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 2 -s -S,并用external debug gdb 用load 命令来烧写
+    这三个option 只能选一个.
+    从 xxx.bin 开始的是给 bootrom 用的,在xxx.bin运行之前,没有做很多软件上的配置,当然也有
+        1. dtb 在 0x40000000
+        2. 有一限制,xxx.bin是被烧写到0x0地址中的,但是这个地址空间有大小限制
+        3. 只有当 从EL3 启动时, 所有core都是running;否则非bootcore是halted
 
-
-
-
+    从 xxx.elf 开始的是给 linux 用的,在xxx.elf运行之前,做了一些软件上的配置
+        1. 除了core0 ,其他的core 都是 halted
+        2. dtb的地址在x0中
+        3. xxx.elf是被烧写到 链接地址中的,一般该地址要大于等于 0x40000000
+    external debug gdb load 这种方式也做了限制
+        1. 除了core0 ,其他的core 都是 halted
 
