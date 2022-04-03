@@ -19,6 +19,10 @@ help:
 	@echo target list:
 	@cat Makefile   |grep ":" |egrep -v "asm-objs|c-objs|PHONY|target" | cut -d ":" -f1 | sed s/^/'\t'/g
 
+kernel.bin.asm: kernel.bin
+	$(E) "  OBJDUMP " $@
+	$(Q) $(CROSS_COMPILE)objdump -D -b binary -m aarch64  $< > $@
+
 kernel.elf.asm: kernel.elf
 	$(E) "  OBJDUMP " $@
 	$(Q) $(CROSS_COMPILE)objdump -D  $< > $@
@@ -40,11 +44,15 @@ $(c-objs): %.o: %.c
 	$(E) "  CC      " $@
 	$(Q) $(CROSS_COMPILE)gcc -g -nostdlib -nostartfiles -c $< -o $@
 
-run: kernel.elf
+run_elf_el1: kernel.elf
 	qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 2  -kernel kernel.elf  2>&1 | tee log_run.txt
+run_bin_el1: kernel.bin
+	qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 2  -bios kernel.bin  2>&1 | tee log_run.txt
 
-debug_run: kernel.elf
+debug_elf_el1: kernel.elf
 	qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 2  -kernel kernel.elf  -s -S 2>&1 | tee log_run.txt
+debug_bin_el1: kernel.bin
+	qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 2  -bios kernel.bin  -s -S 2>&1 | tee log_run.txt
 
 debug_gdb:
 	gdb-multiarch -x gdb_init -tui

@@ -17,7 +17,7 @@ It supports:
 It requires `qemu-system-aarch64` installed to run this project.
 
 ```bash
-make run
+make run_elf_el1
 ```
 
 # References

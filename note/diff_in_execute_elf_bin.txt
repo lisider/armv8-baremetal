@@ -1,0 +1,84 @@
+qemu-system-aarch64 boot options
+    qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 4
+    qemu-system-aarch64 支持bios ,但是必须显式设置,否则不使用bios
+    但是qemu-system-aarch64 在 不显式设置 bios 的时候,会去看share/qemu/efi-virtio.rom 是否为存在,是否为空,如果存在且不空, 才可正常走下去.否则,会自动结束
+    但是qemu-system-aarch64 并不会 读 share/qemu/efi-virtio.rom 中的内容
+
+    share/qemu/efi-virtio.rom 的格式
+        bin/../share/qemu/efi-virtio.rom: BIOS (ia32) ROM Ext. (135*512)
+        aarch64-linux-gnu-objdump  -D -b binary -m aarch64  efi-virtio.rom   > efi-virtio.asm
+        但是好像 efi-virtio.asm 并不像代码
+
+
+    不显式设置-bios // 例如-kernel xxx.elf
+        直接跑kernel
+    -bios none
+        不支持
+    -bios xxx.bin
+        会去找 xxx.bin 文件,并以其为 bios 运行
+        -bios QEMU_EFI.fd // 从UEFI启动
+        -bios u-boot.bin // 从U-boot 启动
+
+elf boot
+    -kernel kernel.elf
+    when boot , 根据elf中的链接地址将其elf 中的代码数据下载到 mem (0x40080000
+            开始的内存) , 并设置PC为 0x40080000
+bin boot
+    -bios kernel.bin
+    when boot , 将 bin 中的文件 依次烧写到 mem 0x0 开始的内存中,并设置pc 为
+            0x00000000
+    注意 : 除了和 mem 烧写地址和pc不同,某些指令也不同,这里面的一些跳转指令
+        objcopy 处理了,但是绝对跳转指令,objcopy并没有处理
+        所以执行.bin 的时候,仍然可能会跳转到 elf中的链接地址中去
+        此时,会出现问题
+    例如 : elf 文件的反汇编中
+            4008002c:	58000120 	ldr	x0, 40080050 <_start+0x50>
+            40080030:	d5184020 	msr	elr_el1, x0
+            40080034:	d69f03e0 	eret
+            40080038:	40080800 	.inst	0x40080800 ; undefined
+            4008003c:	00000000 	.inst	0x00000000 ; undefined
+            40080040:	40880000 	.inst	0x40880000 ; undefined
+            40080044:	00000000 	.inst	0x00000000 ; undefined
+            40080048:	30c50838 	adr	x24, 4000a14d <_start-0x75eb3>
+            4008004c:	00000000 	.inst	0x00000000 ; undefined
+            40080050:	40a83b48 	.inst	0x40a83b48 ; undefined
+           此时 eret 后 会跳到 0x40a83b48 . 此处有指令
+
+           bin 文件的反汇编中 // 与elf文件中的反汇编对应同一处代码
+            2c:	58000120 	ldr	x0, 0x50
+            30:	d5184020 	msr	elr_el1, x0
+            34:	d69f03e0 	eret
+            38:	40080800 	.inst	0x40080800 ; undefined
+            3c:	00000000 	.inst	0x00000000 ; undefined
+            40:	40880000 	.inst	0x40880000 ; undefined
+            44:	00000000 	.inst	0x00000000 ; undefined
+            48:	30c50838 	adr	x24, 0xfffffffffff8a14d
+            4c:	00000000 	.inst	0x00000000 ; undefined
+            50:	40a83b48 	.inst	0x40a83b48 ; undefined
+
+           此时 eret 后 会跳到 0x40a83b48 . 但是此处没有指令,这个地址是elf链接
+           相关地址
+
+           可以通过在external debug 侧 通过
+           print *(int*)0x50 = 0xa03b48 来解决这个问题,起码你可以看到
+           "Hello World"
+
+
+           即 objcopy 生成bin文件的过程 无法处理 这种用地址中的值来索引pc的行为
+
+           但是可以处理一些函数调用行为,例如
+           ELF
+            0000000040a83b48 <_el0_entry>:
+                40a83b48:	5800011e 	ldr	x30, 40a83b68 <loop+0x14>
+                40a83b4c:	910003df 	mov	sp, x30
+                40a83b50:	97fff12c 	bl	40a80000 <main>
+           BIN
+                a03b48:	5800011e 	ldr	x30, 0xa03b68
+                a03b4c:	910003df 	mov	sp, x30
+                a03b50:	97fff12c 	bl	0xa00000
+
+
+
+
+
+
