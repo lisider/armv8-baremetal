@@ -1,0 +1,31 @@
+symbol
+    没有symbol也是可以调试的,不过只能根据地址调试(汇编级别调试)
+
+    当我们使用 symbol 的时候, 其实使用的是 地址与符号的对应关系
+
+
+    所以在 gdb set architecture aarch64 和 target remote localhost:1234 后,
+    当内存中有指令,且pc置位后
+    我们只需要在gdb侧 添加符号表,就可以使用高级指令(而非地址调试方式)
+
+    高级指令(break fun , 而不是 break addr)
+    且我们执行 step 指令的时候能看到跑到了哪一行c代码
+
+    添加符号表的方式有几种
+        1. file xxx.elf
+        2. add-symbol-file xxx.elf
+
+    当我们需要在符号表基础之上改(地址与符号)对应关系的时候,可用如下指令
+        1. symbol-file
+    当然我们也可以在添加符号表的时候就更改,例如
+        1.add-symbol-file kernel.elf -s .text 0x00000000
+        2.add-symbol-file kernel.elf -o 0x40080000
+
+怎么调试 bin 文件
+    其实找好 elf 文件与 bin 文件的符号表值 OFFSET 就行了
+    然后添加符号表之后,更改对应关系,就可以调试bin文件了
+
+怎么调试 elf 文件
+    直接加载 elf 文件符号表就行了
+
+
