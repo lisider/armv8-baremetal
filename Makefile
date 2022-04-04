@@ -39,10 +39,14 @@ kernel.elf: $(asm-objs) $(c-objs)
 $(asm-objs): %.o: %.S
 	$(E) "  CC      " $@
 	$(Q) $(CROSS_COMPILE)gcc -g -nostdlib -nostartfiles -c $< -o $@
+	$(Q) $(CROSS_COMPILE)gcc -g -nostdlib -nostartfiles -E $< -o $(patsubst %.o,%.i,$@)
+	$(Q) $(CROSS_COMPILE)objdump -D $@ > $(patsubst %.o,%.asm,$@)
 
 $(c-objs): %.o: %.c
 	$(E) "  CC      " $@
 	$(Q) $(CROSS_COMPILE)gcc -g -nostdlib -nostartfiles -c $< -o $@
+	$(Q) $(CROSS_COMPILE)gcc -g -nostdlib -nostartfiles -E $< -o $(patsubst %.o,%.i,$@)
+	$(Q) $(CROSS_COMPILE)objdump -D $@ > $(patsubst %.o,%.asm,$@)
 
 run_elf_el1: kernel.elf
 	qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 2  -kernel kernel.elf  2>&1 | tee log_run.txt

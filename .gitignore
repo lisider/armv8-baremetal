@@ -5,3 +5,5 @@ output
 cscope*
 tags
 log*.txt
+*.i
+*.asm
