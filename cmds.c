@@ -68,6 +68,36 @@ CMD(svc){
     printf("%s exit\n",__func__);
 }
 
+#include "cc.h"
+CMD(cc){
+
+    if (argc != 2){
+        printf("Usage for calling_convention :\n");
+        printf("\tcc c_call_asm\n");
+        printf("\tcc c_call_c\n");
+        printf("\tcc asm_call_c\n");
+        printf("\tcc c_embedded_assembly\n");
+        return ;
+    }
+    if (strcmp((char *)argv + 32,"c_call_asm") == 0){
+        cc_asm_argc_0_return_0();
+        cc_asm_argc_1_return_0(0x12345678);
+        cc_asm_argc_2_return_0(0x12345678,0x55555555);
+        cc_asm_argc_0_return_1();
+    }else if (strcmp((char *)argv + 32,"c_call_c") == 0){
+        cc_c_argc_0_return_0();
+        cc_c_argc_1_return_0(0x12345678);
+        cc_c_argc_2_return_0(0x12345678,0x55555555);
+        cc_c_argc_0_return_1();
+    }else if (strcmp((char *)argv + 32,"asm_call_c") == 0){
+        cc_asm_caller_argc_0();
+        cc_asm_caller_argc_1();
+        cc_asm_caller_argc_2();
+    }else if (strcmp((char *)argv + 32,"c_embedded_assembly") == 0){
+        printf("0X%08X\n",cc_c_embedded_assembly());
+    }
+}
+
 
 
 //-------------------------------------------------------------
