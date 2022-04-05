@@ -68,6 +68,7 @@ void brk_handler(){
 
 void svc_handler(){
     printf("%s\n",__func__);
+    printf("syscall number is %d\n",pt_regs->regs[8]);
 }
 
 void el021_sync_handler(struct pt_regs * p){
