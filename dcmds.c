@@ -97,6 +97,20 @@ DCMD(rd){
     printf("0x%lx\n",read64(addr) );
 }
 
+#include "a64_exercises.h"
+DCMD(a64){
+
+    if (argc != 2){
+        printf("Usage for a64 exercises :\n");
+        printf("\ta64 sc    : system control\n");
+        return ;
+    }
+    if (strcmp((char *)argv + 32,"sc") == 0){
+        printf("SP       :0X%016lx\n",get_sp());
+        printf("CurrentEL:0X%016lx\n",get_currentEL());
+    }
+}
+
 //-------------------------------------------------------------
 
 DCMD(new){

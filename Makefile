@@ -10,7 +10,7 @@ export E Q
 CROSS_COMPILE ?= aarch64-linux-gnu-
 export LOG_DIR=$(shell  echo output/`date +"%Y_%m_%d_%H_%M_%S"`)
 
-asm-objs = el1_boot.o el0_entry.o el1_vector.o cc_asm.o
+asm-objs = el1_boot.o el0_entry.o el1_vector.o cc_asm.o a64_exercises_asm.o
 c-objs = main.o  pl011.o el1_handler.o stdio.o \
 	vsprintf.o shell.o cmds.o parse.o string.o \
 	dcmds.o dlib.o cc_c.o

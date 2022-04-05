@@ -12,6 +12,7 @@ It supports:
 - [x] svc demo
 - [x] brk instructions & debug monitor shell in EL1
 - [x] external debug (likely cpu<->jtag2usb<->usb_drvier<->gdbserver<->gdb)
+- [x] [A64 exercises](https://developer.arm.com/documentation/102422/0100)
 - [ ] SMP
 
 It requires `qemu-system-aarch64` installed to run this project.

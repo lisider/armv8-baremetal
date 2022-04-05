@@ -98,6 +98,34 @@ CMD(cc){
     }
 }
 
+#include "a64_exercises.h"
+CMD(a64){
+
+    if (argc != 2){
+        printf("Usage for a64 exercises :\n");
+        printf("\ta64 dp_fc : data_processing_and_flow_control\n");
+        printf("\ta64 am    : accessing memory\n");
+        printf("\ta64 sc    : system control\n");
+        return ;
+    }
+    if (strcmp((char *)argv + 32,"dp_fc") == 0){
+        int ret;
+        ret = gcd(0x40,0x30);
+        printf("ret:0X%08X\n",ret);
+        ret = gcd(0x30,0x40);
+        printf("ret:0X%08X\n",ret);
+        ret = gcd(0x40,0x40);
+        printf("ret:0X%08X\n",ret);
+    }else if (strcmp((char *)argv + 32,"am") == 0){
+        unsigned char *src    = "hello world";
+        unsigned char dst[32] = {0};
+        my_memcpy(src,dst,11);
+        printf("%s\n",dst);
+    }else if (strcmp((char *)argv + 32,"sc") == 0){
+        printf("SP       :0X%016lx\n",get_sp());
+    }
+}
+
 
 
 //-------------------------------------------------------------
