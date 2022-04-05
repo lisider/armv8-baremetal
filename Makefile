@@ -9,6 +9,9 @@ export E Q
 
 CROSS_COMPILE ?= aarch64-linux-gnu-
 export LOG_DIR=$(shell  echo output/`date +"%Y_%m_%d_%H_%M_%S"`)
+#OBJDUMP_FLAGS=-D
+OBJDUMP_FLAGS=-j .text -j .text.boot -j .text.vector_el1 -d
+DEBUG_FLAGS=-g
 
 asm-objs = el1_boot.o el0_entry.o el1_vector.o cc_asm.o a64_exercises_asm.o
 c-objs = main.o  pl011.o el1_handler.o stdio.o \
@@ -21,11 +24,11 @@ help:
 
 kernel.bin.asm: kernel.bin
 	$(E) "  OBJDUMP " $@
-	$(Q) $(CROSS_COMPILE)objdump -D -b binary -m aarch64  $< > $@
+	$(Q) $(CROSS_COMPILE)objdump $(OBJDUMP_FLAGS) -b binary -m aarch64  $< > $@
 
 kernel.elf.asm: kernel.elf
 	$(E) "  OBJDUMP " $@
-	$(Q) $(CROSS_COMPILE)objdump -D  $< > $@
+	$(Q) $(CROSS_COMPILE)objdump $(OBJDUMP_FLAGS)  $< > $@
 
 kernel.bin: kernel.elf
 	$(E) "  OBJCOPY " $@
@@ -38,15 +41,15 @@ kernel.elf: $(asm-objs) $(c-objs)
 
 $(asm-objs): %.o: %.S
 	$(E) "  CC      " $@
-	$(Q) $(CROSS_COMPILE)gcc -g -nostdlib -nostartfiles -c $< -o $@
-	$(Q) $(CROSS_COMPILE)gcc -g -nostdlib -nostartfiles -E $< -o $(patsubst %.o,%.i,$@)
-	$(Q) $(CROSS_COMPILE)objdump -D $@ > $(patsubst %.o,%.asm,$@)
+	$(Q) $(CROSS_COMPILE)gcc $(DEBUG_FLAGS) -nostdlib -nostartfiles -c $< -o $@
+	$(Q) $(CROSS_COMPILE)gcc $(DEBUG_FLAGS) -nostdlib -nostartfiles -E $< -o $(patsubst %.o,%.i,$@)
+	$(Q) $(CROSS_COMPILE)objdump $(OBJDUMP_FLAGS) $@ > $(patsubst %.o,%.asm,$@)
 
 $(c-objs): %.o: %.c
 	$(E) "  CC      " $@
-	$(Q) $(CROSS_COMPILE)gcc -g -nostdlib -nostartfiles -c $< -o $@
-	$(Q) $(CROSS_COMPILE)gcc -g -nostdlib -nostartfiles -E $< -o $(patsubst %.o,%.i,$@)
-	$(Q) $(CROSS_COMPILE)objdump -D $@ > $(patsubst %.o,%.asm,$@)
+	$(Q) $(CROSS_COMPILE)gcc $(DEBUG_FLAGS) -nostdlib -nostartfiles -c $< -o $@
+	$(Q) $(CROSS_COMPILE)gcc $(DEBUG_FLAGS) -nostdlib -nostartfiles -E $< -o $(patsubst %.o,%.i,$@)
+	$(Q) $(CROSS_COMPILE)objdump $(OBJDUMP_FLAGS) $@ > $(patsubst %.o,%.asm,$@)
 
 run_elf_el1: kernel.elf
 	qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 2  -kernel kernel.elf  2>&1 | tee log_run.txt
