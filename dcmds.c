@@ -62,7 +62,7 @@ DCMD(regs){
 DCMD(reg){
 
     if (argc == 1){
-        printf("Usage : new MPIDR_EL1 CurrentEL\n");
+        printf("Usage : reg MPIDR_EL1 CurrentEL\n");
         return ;
     }
     int i = 1;
