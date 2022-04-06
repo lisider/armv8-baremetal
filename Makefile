@@ -80,6 +80,6 @@ kill:
 .PHONY: clean
 clean:
 	$(E) "  CLEAN   "
-	$(Q) rm -f *.o kernel*
+	$(Q) rm -f *.o kernel* *.i *.asm
 	$(Q)$(shell [ ! -e output  ] && mkdir output)
 	$(Q)$(shell [ -e log_run.txt ] && mkdir ${LOG_DIR} && mv log* ${LOG_DIR})
